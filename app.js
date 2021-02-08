@@ -5,7 +5,7 @@ require('dotenv/config');
 
 const PostModel = require('./models/posts');
 const bodyParser = require('body-parser');
-let port = 8081;
+let port = process.env.PORT || 8081;
 var dataLength;
 
 var data = [    // {
