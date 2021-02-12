@@ -227,7 +227,7 @@ app.get('/memes/name/:name',async (req,res)=>{
      try{
          const posts = await PostModel.find();
          posts.forEach(da =>{
-             if(da.id == req.params.id)
+             if(da.name.toLowerCase().includes(req.params.name.toLowerCase()) || req.params.name.toLowerCase().includes(da.name.toLowerCase()))
              {
                  var obj = {};
                  obj.id = da.id;
