@@ -39,14 +39,14 @@ app.use(bodyParser.json());
 app.get('/memes', async (req, res)=>{
     var DataObjWithoutTime = [];
     try{
-        const posts = await PostModel.find().limit(100);
+        const posts = await PostModel.find().sort({$natural:-1}).limit(100);
         posts.forEach(da =>{
             var newObj={};
             newObj.id= da.id;
             newObj.name = da.name;
             newObj.url = da.url;
             newObj.caption = da.caption;
-            DataObjWithoutTime.unshift(newObj);
+            DataObjWithoutTime.push(newObj);
         })
         //data = SampleData;
         //console.log(data);
