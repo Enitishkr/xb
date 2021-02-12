@@ -61,7 +61,7 @@ app.get('/memes', async (req, res)=>{
 app.get('/memes/time', async (req, res)=>{
     var SampleData = [];
     try{
-        const posts = await PostModel.find().limit(100);
+        const posts = await PostModel.find().sort({$natural:-1}).limit(100);
         posts.forEach(da =>{
             var newObj={};
             newObj.id= da.id;
@@ -69,7 +69,7 @@ app.get('/memes/time', async (req, res)=>{
             newObj.url = da.url;
             newObj.caption = da.caption;
             newObj.Dtime = da.Dtime;
-            SampleData.unshift(newObj);
+            SampleData.push(newObj);
         })
         data = SampleData;
         //console.log(data);
@@ -82,50 +82,117 @@ app.get('/memes/time', async (req, res)=>{
 
 //post Request
 app.post('/memes',async (req,res) => {
-        //console.log(req.query);
-        try{
-            const posts = await PostModel.countDocuments();
-            //console.log(posts);
-            dataLength = `${posts+1}`;
-        }
-        catch(err){
-            console.log('rer');
-        }
-        var obj = {id: dataLength};
-        var newObj=req.body;
-       // console.log(req.body);
-        newObj.id= dataLength;
-        // newObj.name = req.query.name;
-        // newObj.url = req.query.url;
-        // newObj.caption = req.query.caption;
-        var date = new Date();
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            var seconds = date.getSeconds();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // the hour '0' should be '12'
-            minutes = minutes < 10 ? '0'+minutes : minutes;
-            seconds = seconds < 10 ? '0'+ seconds:seconds;
-            var strTime = hours + ':' + minutes + ':' + seconds+ ' ' +ampm;
-            var strDate = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate() + " "+strTime;
-            //console.log(strDate);
-        newObj.Dtime =strDate;
-        //Adding It On top
-        data.unshift(newObj);
-        const postData = new PostModel(newObj);
-        try{
-            const savedData = await postData.save();
-            //console.log(savedData);
-            res.json(obj);
-        }
-        catch(err){
-            console.log(err);
-            res.json({mess:err})
-        }
+    //     //console.log(req.query);
+    //     try{
+    //         const posts = await PostModel.countDocuments();
+    //         //console.log(posts);
+    //         dataLength = `${posts+1}`;
+    //     }
+    //     catch(err){
+    //         console.log('rer');
+    //     }
+    //     var obj = {id: dataLength};
+    //     var newObj=req.body;
+    //    // console.log(req.body);
+    //     newObj.id= dataLength;
+    //     // newObj.name = req.query.name;
+    //     // newObj.url = req.query.url;
+    //     // newObj.caption = req.query.caption;
+    //     var date = new Date();
+    //         var hours = date.getHours();
+    //         var minutes = date.getMinutes();
+    //         var seconds = date.getSeconds();
+    //         var ampm = hours >= 12 ? 'pm' : 'am';
+    //         hours = hours % 12;
+    //         hours = hours ? hours : 12; // the hour '0' should be '12'
+    //         minutes = minutes < 10 ? '0'+minutes : minutes;
+    //         seconds = seconds < 10 ? '0'+ seconds:seconds;
+    //         var strTime = hours + ':' + minutes + ':' + seconds+ ' ' +ampm;
+    //         var strDate = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate() + " "+strTime;
+    //         //console.log(strDate);
+    //     newObj.Dtime =strDate;
+    //     //Adding It On top
+    //     data.unshift(newObj);
+    //     const postData = new PostModel(newObj);
+    //     try{
+    //         const savedData = await postData.save();
+    //         //console.log(savedData);
+    //         res.json(obj);
+    //     }
+    //     catch(err){
+    //         console.log(err);
+    //         res.json({mess:err})
+    //     }
                
         
+        var newObj = req.body;
+
+        // to Remove Extra Spaces
+        newObj.name = newObj.name.trim();
+        newObj.url = newObj.url;
+        newObj.caption = newObj.caption.trim();
+        var date = new Date();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        seconds = seconds < 10 ? '0'+ seconds:seconds;
+        var strTime = hours + ':' + minutes + ':' + seconds+ ' ' +ampm;
+        var strDate = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate() + " "+strTime;
+        newObj.Dtime =strDate;
+        var flag = 0;
         
+        if(newObj.caption == '' || newObj.url == '' || newObj.name == '' || newObj.caption == null || newObj.url == null || newObj.name == null)
+        {
+            res.sendStatus(417);
+            
+        }
+        else{
+        // Verifying Whether the same data is already present in DB
+                    try{
+                        const posts = await PostModel.find();
+                        posts.forEach(da =>{
+                            if(da.name == newObj.name && da.url == newObj.url && da.caption == newObj.caption)
+                            {
+                                flag = 1;
+                            }
+                        });
+                    }
+                    catch(err){
+                        console.log(err);
+                    }
+                
+                    if(flag==1)
+                        {
+                            // if Same Data is present
+                            res.sendStatus(409);
+                        }
+                    else{
+                        // Getting dataLength For ID of the meme
+                        try{
+                            const posts = await PostModel.countDocuments();
+                            dataLength = `${posts+1}`;
+                        }
+                        catch(err){
+                            console.log('rer');
+                        }
+                        
+                        var obj = {id: dataLength};
+                        newObj.id = dataLength;
+                        const postData = new PostModel(newObj);
+                        try{
+                            const savedData = await postData.save();
+                            res.json(obj);
+                        }
+                        catch(err){
+                            console.log(err);
+                            res.json({mess:err})
+                        }
+                    }
+         }
 });
 
 
