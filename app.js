@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+// Import mongoose for DB connection
 const mongoose = require('mongoose');
 require('dotenv/config');
 
@@ -13,14 +14,7 @@ const swaggerUi = require('swagger-ui-express'),swaggerDocument = require('./swa
 
 var dataLength;
 
-var data = [    // {
-                //     id: 1,
-                //     name: "Nitish",
-                //     url:"https://www.w3schools.com/images/w3schools_green.jpg",
-                //     caption:"This is nitish",
-                //     Dtime:'2021/2/5  9:54 am'
-                // }
-            ];
+var data = [ ];
 //middleWare
 // Allowing cros
 app.use(function(req,res,next){
@@ -31,9 +25,7 @@ app.use(function(req,res,next){
     next();
 });
 
-app.use(bodyParser.urlencoded({
-    extended: true
-  }));
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.use(bodyParser.json());
@@ -45,6 +37,7 @@ app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/memes', async (req, res)=>{
     var DataObjWithoutTime = [];
     try{
+        // Retrieving Latest 100 Memes Data From DataBase
         const posts = await PostModel.find().sort({$natural:-1}).limit(100);
         posts.forEach(da =>{
             var newObj={};
@@ -53,13 +46,12 @@ app.get('/memes', async (req, res)=>{
             newObj.url = da.url;
             newObj.caption = da.caption;
             DataObjWithoutTime.push(newObj);
-        })
-        //data = SampleData;
-        //console.log(data);
+        });
     }
     catch(err){
         console.log(err);
     }
+     // sending Back Json Data to the FronEnd
     res.json(DataObjWithoutTime);
 });
 
@@ -83,53 +75,13 @@ app.get('/memes/time', async (req, res)=>{
     catch(err){
         console.log(err);
     }
+     // sending Back Json Data to the client
     res.json(data);
 });
 
 //post Request
 app.post('/memes',async (req,res) => {
-    //     //console.log(req.query);
-    //     try{
-    //         const posts = await PostModel.countDocuments();
-    //         //console.log(posts);
-    //         dataLength = `${posts+1}`;
-    //     }
-    //     catch(err){
-    //         console.log('rer');
-    //     }
-    //     var obj = {id: dataLength};
-    //     var newObj=req.body;
-    //    // console.log(req.body);
-    //     newObj.id= dataLength;
-    //     // newObj.name = req.query.name;
-    //     // newObj.url = req.query.url;
-    //     // newObj.caption = req.query.caption;
-    //     var date = new Date();
-    //         var hours = date.getHours();
-    //         var minutes = date.getMinutes();
-    //         var seconds = date.getSeconds();
-    //         var ampm = hours >= 12 ? 'pm' : 'am';
-    //         hours = hours % 12;
-    //         hours = hours ? hours : 12; // the hour '0' should be '12'
-    //         minutes = minutes < 10 ? '0'+minutes : minutes;
-    //         seconds = seconds < 10 ? '0'+ seconds:seconds;
-    //         var strTime = hours + ':' + minutes + ':' + seconds+ ' ' +ampm;
-    //         var strDate = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate() + " "+strTime;
-    //         //console.log(strDate);
-    //     newObj.Dtime =strDate;
-    //     //Adding It On top
-    //     data.unshift(newObj);
-    //     const postData = new PostModel(newObj);
-    //     try{
-    //         const savedData = await postData.save();
-    //         //console.log(savedData);
-    //         res.json(obj);
-    //     }
-    //     catch(err){
-    //         console.log(err);
-    //         res.json({mess:err})
-    //     }
-               
+   
         
         var newObj = req.body;
 
@@ -299,37 +251,7 @@ app.get('/memes/name/:name',async (req,res)=>{
 });
 
 app.patch('/memes/:id', async function (req, res) {
-    // var updateObject = req.body; 
-    // var id = req.params.id;
-    // var flag = 0;
-    // try{
-    //     const posts = await PostModel.find();
-    //     posts.forEach(da =>{
-    //         if(da.id == id)
-    //         {
-    //             flag = 1;
-    //         }
-    //     })
-    // }
-    // catch(err){
-    //     console.log(err);
-    // }
-    // if(flag == 0)
-    // res.sendStatus(404);
-    // else{
-    //     try{
-    //         const posts = await PostModel.updateOne({id  : id}, {$set: updateObject});
-    //         res.sendStatus(200);
-    //     }
-    //     catch(err){
-    //         console.log('rer',err);
-    //         res.sendStatus(404);
-    //     }
-    // }
-
-
-
-
+  
     var updateObject = {}; 
     updateObject.caption = req.body.caption;
     updateObject.url = req.body.url;
