@@ -6,6 +6,11 @@ require('dotenv/config');
 const PostModel = require('./models/posts');
 const bodyParser = require('body-parser');
 let port = process.env.PORT || 8081;
+
+//For Swagger-UI
+const swaggerUi = require('swagger-ui-express'),swaggerDocument = require('./swagger.json');
+
+
 var dataLength;
 
 var data = [    // {
@@ -33,6 +38,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
+app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 // For Getting Latest 100 Memes without Time Parameter

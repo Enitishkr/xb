@@ -1,0 +1,370 @@
+{
+    "swagger": "2.0",
+    "info": {
+    "version": "1.0.0", 
+    "title": "XMEME-Project-REST-API",
+    "description": "My User Project Application API",
+    "license": {
+    "name": "MIT",
+    "url": "https://opensource.org/licenses/MIT"
+    }
+    },
+    "host": "xmeme-nitish.herokuapp.com",
+    "basePath": "/",
+    "schemes": [
+    "http", "https"
+    ],
+    "consumes": [
+    "application/json"
+    ],
+    "produces": [
+    "application/json"
+    ],
+
+    "paths": {
+            "/memes": {
+                "get": {
+                    "tags": [
+                        "Memes"
+                        ],
+                    "summary": "Get latest 100 Memes",
+                    "responses": {
+                        "200": {
+                                "description": "OK",
+                                "schema":{
+                                    "required": [
+                                        "name",
+                                        "id",
+                                        "caption",
+                                        "url"
+                                        ],
+                                        "properties": {
+                                        "id": {
+                                        "type": "string",
+                                        "uniqueItems": true,
+                                        "example":"1"
+                                        },
+                                        "name": {
+                                        "type": "string",
+                                        "example":"Nitish Kumar Reddy"
+                                        },
+                                        "caption": {
+                                        "type": "string",
+                                        "example":"Hi this is Nitish"
+                                        },
+                                        "url": {
+                                        "type": "string",
+                                        "example":"https://picsum.photos/200"
+                                        }
+                                        }
+                                }
+                        }
+                    }
+                },
+                "post": {
+                    "tags": [
+                        "Post a Meme"
+                        ],
+                    "summary": "Adding a Meme",
+                    "parameters":[
+                        {
+                            "name": "Body",
+                            "in": "body",
+                            "description": "Details",
+                            "required": true,
+                            "schema":{
+                                "required": [
+                                    "name",
+                                    "caption",
+                                    "url"
+                                    ],
+                                    "properties": {
+                                    "name": {
+                                    "type": "string",
+                                    "example":"Nitish Kumar Reddy"
+                                    },
+                                    "caption": {
+                                    "type": "string",
+                                    "example":"Hi this is Nitish"
+                                    },
+                                    "url": {
+                                    "type": "string",
+                                    "example":"https://picsum.photos/200"
+                                    }
+                                    }
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                                "description": "OK",
+                                "schema":{
+                                    "required": [
+                                        "id"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                            "type": "string",
+                                            "example":"10"
+                                            }
+                                        }
+                                    }
+                        }
+                    }
+                }
+            },
+            "/memes/time": {
+                "get": {
+                    "tags": [
+                        "Memes along with Data-Time"
+                        ],
+                    "summary": "Get latest 100 Memes along with the data and time when they posted",
+                    "responses": {
+                        "200": {
+                                "description": "OK",
+                                "schema":{
+                                    "required": [
+                                        "name",
+                                        "id",
+                                        "caption",
+                                        "url"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                            "type": "string",
+                                            "uniqueItems": true,
+                                            "example":"1"
+                                            },
+                                            "name": {
+                                            "type": "string",
+                                            "example":"Nitish Kumar Reddy"
+                                            },
+                                            "caption": {
+                                            "type": "string",
+                                            "example":"Hi this is Nitish"
+                                            },
+                                            "url": {
+                                            "type": "string",
+                                            "example":"https://picsum.photos/200"
+                                            },
+                                            "Dtime":{
+                                                "type":"string",
+                                                "example":"2021/2/10 9:57:48 pm"
+                                            }
+                                        }
+                                    }
+                        }
+                    }
+                }
+            },
+            "/memes/{id}": {
+                "get": {
+                    "tags": [
+                        "Get memes by ID"
+                        ],
+                    "summary": "Get Memes by ID param",
+                    "parameters":[
+                        {
+                        "in": "path",
+                        "name": "id" ,
+                        "required": true,
+                        "schema":{
+                            "type": "string"
+                        },
+                        "description": "The Meme ID"}
+                    ],
+                    "responses": {
+                        "200": {
+                                "description": "OK",
+                                "schema":{
+                                    "required": [
+                                        "name",
+                                        "id",
+                                        "caption",
+                                        "url"
+                                        ],
+                                        "properties": {
+                                        "id": {
+                                        "type": "string",
+                                        "uniqueItems": true,
+                                        "example":"1"
+                                        },
+                                        "name": {
+                                        "type": "string",
+                                        "example":"Nitish Kumar Reddy"
+                                        },
+                                        "caption": {
+                                        "type": "string",
+                                        "example":"Hi this is Nitish"
+                                        },
+                                        "url": {
+                                        "type": "string",
+                                        "example":"https://picsum.photos/200"
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                },
+                "patch": {
+                    "tags": [
+                        "Update a meme"
+                        ],
+                    "summary": "Updating a meme",
+                    "parameters":[
+                        {
+                            "in": "path",
+                            "name": "id" ,
+                            "required": true,
+                            "schema":{
+                                "type": "string"
+                            },
+                            "description": "The Meme ID"
+                        },
+                        {
+                            "name": "Body",
+                            "in": "body",
+                            "description": "Details",
+                            "required": true,
+                            "schema":{
+                                    "properties": {
+                                    "caption": {
+                                    "type": "string",
+                                    "example":"Hi this is Nitish"
+                                    },
+                                    "url": {
+                                    "type": "string",
+                                    "example":"https://picsum.photos/200"
+                                    }
+                                    }
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                                "description": "OK"
+                        },
+                        "404":{
+                            "description":"Id Not found"
+                        },
+                        "409":{
+                            "description":"Confict"
+                        }
+                    }
+                }
+            },
+            "/memes/time/{id}": {
+                "get": {
+                    "tags": [
+                        "Get memes along with Data and Time by ID"
+                        ],
+                    "summary": "Get memes along with Data and Time by ID",
+                    "parameters":[
+                        {
+                        "in": "path",
+                        "name": "id" ,
+                        "required": true,
+                        "schema":{
+                            "type": "string"
+                        },
+                        "description": "The Meme ID"}
+                    ],
+                    "responses": {
+                        "200": {
+                                "description": "OK",
+                                "schema":{
+                                    "required": [
+                                        "name",
+                                        "id",
+                                        "caption",
+                                        "url"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                            "type": "string",
+                                            "uniqueItems": true,
+                                            "example":"1"
+                                            },
+                                            "name": {
+                                            "type": "string",
+                                            "example":"Nitish Kumar Reddy"
+                                            },
+                                            "caption": {
+                                            "type": "string",
+                                            "example":"Hi this is Nitish"
+                                            },
+                                            "url": {
+                                            "type": "string",
+                                            "example":"https://picsum.photos/200"
+                                            },
+                                            "Dtime":{
+                                                "type":"string",
+                                                "example":"2021/2/10 9:57:48 pm"
+                                            }
+                                        }
+                                    }
+                        }
+                    }
+                }
+            },
+            "/memes/name/{name}": {
+                "get": {
+                    "tags": [
+                        "Get memes along with Data and Time by NAME"
+                        ],
+                    "summary": "Get memes along with Data and Time by NAME",
+                    "parameters":[
+                        {
+                        "in": "path",
+                        "name": "name" ,
+                        "required": true,
+                        "schema":{
+                            "type": "string"
+                        },
+                        "description": "The Meme Name"}
+                    ],
+                    "responses": {
+                        "200": {
+                                "description": "OK",
+                                "schema":{
+                                    "required": [
+                                        "name",
+                                        "id",
+                                        "caption",
+                                        "url"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                            "type": "string",
+                                            "uniqueItems": true,
+                                            "example":"1"
+                                            },
+                                            "name": {
+                                            "type": "string",
+                                            "example":"Nitish Kumar Reddy"
+                                            },
+                                            "caption": {
+                                            "type": "string",
+                                            "example":"Hi this is Nitish"
+                                            },
+                                            "url": {
+                                            "type": "string",
+                                            "example":"https://picsum.photos/200"
+                                            },
+                                            "Dtime":{
+                                                "type":"string",
+                                                "example":"2021/2/10 9:57:48 pm"
+                                            }
+                                        }
+                                    }
+                        }
+                    }
+                }
+            }
+            
+            
+
+        }
+        
+}
+
