@@ -200,41 +200,65 @@ app.post('/memes',async (req,res) => {
 // Retriving the data based on ID param
 app.get('/memes/:id',(req,res)=>{
     
-    var arrObj = [];
-    data.forEach(da => {
-        if(req.params.id === da.id)
-        {var obj = {};
-            obj.id = da.id;
-            obj.name = da.name;
-            obj.url = da.url;
-            obj.caption = da.caption;
-            obj.Dtime = da.Dtime;
-            arrObj.push(obj);
-        }
-    });
+   // flag is used whether ID is present or not flag = 1 implies present
+   var arrObj = [],flag=0;
     
-    res.json(arrObj);
+   try{
+       const posts = await PostModel.find();
+       posts.forEach(da =>{
+           if(da.id == req.params.id)
+           {
+               var obj = {};
+               obj.id = da.id;
+               obj.name = da.name;
+               obj.url = da.url;
+               obj.caption = da.caption;
+               //obj.Dtime = da.Dtime;
+               arrObj.push(obj);
+               flag = 1;
+           }
+       });
+       
+   }
+   catch(err){
+       console.log(err);
+   }
+   if(flag == 0)
+   res.sendStatus(404);
+   else
+   res.json(arrObj);
 })
 
 // Retriving the Data Based on Name Param
 app.get('/memes/name/:name',(req,res)=>{
     
-    var arrObj = [];
+     // flag is used whether ID is present or not flag = 1 implies present
+     var arrObj = [],flag=0;
     
-    data.forEach(da => {
-        //console.log('I am here',req.params.name.toLowerCase(),da.name.toLowerCase());
-        if(da.name.toLowerCase().includes(req.params.name.toLowerCase()))
-        {var obj = {};
-            obj.id = da.id;
-            obj.name = da.name;
-            obj.url = da.url;
-            obj.caption = da.caption;
-            obj.Dtime = da.Dtime;
-            arrObj.push(obj);
-            //console.log('new unss',arrObj);
-        }
-    });
-    res.json(arrObj);
+     try{
+         const posts = await PostModel.find();
+         posts.forEach(da =>{
+             if(da.id == req.params.id)
+             {
+                 var obj = {};
+                 obj.id = da.id;
+                 obj.name = da.name;
+                 obj.url = da.url;
+                 obj.caption = da.caption;
+                 obj.Dtime = da.Dtime;
+                 arrObj.push(obj);
+                 flag = 1;
+             }
+         });
+         
+     }
+     catch(err){
+         console.log(err);
+     }
+     if(flag == 0)
+     res.sendStatus(404);
+     else
+     res.json(arrObj);
 });
 
 app.patch('/memes/:id', async function (req, res) {
