@@ -293,33 +293,123 @@ app.get('/memes/name/:name',async (req,res)=>{
 });
 
 app.patch('/memes/:id', async function (req, res) {
-    var updateObject = req.body; 
+    // var updateObject = req.body; 
+    // var id = req.params.id;
+    // var flag = 0;
+    // try{
+    //     const posts = await PostModel.find();
+    //     posts.forEach(da =>{
+    //         if(da.id == id)
+    //         {
+    //             flag = 1;
+    //         }
+    //     })
+    // }
+    // catch(err){
+    //     console.log(err);
+    // }
+    // if(flag == 0)
+    // res.sendStatus(404);
+    // else{
+    //     try{
+    //         const posts = await PostModel.updateOne({id  : id}, {$set: updateObject});
+    //         res.sendStatus(200);
+    //     }
+    //     catch(err){
+    //         console.log('rer',err);
+    //         res.sendStatus(404);
+    //     }
+    // }
+
+
+
+
+    var updateObject = {}; 
+    updateObject.caption = req.body.caption;
+    updateObject.url = req.body.url;
+    updateObject.url = updateObject.url.trim();
+    updateObject.caption = updateObject.caption.trim();
     var id = req.params.id;
-    var flag = 0;
-    try{
-        const posts = await PostModel.find();
-        posts.forEach(da =>{
-            if(da.id == id)
-            {
-                flag = 1;
-            }
-        })
+
+    var date = new Date();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        seconds = seconds < 10 ? '0'+ seconds:seconds;
+        var strTime = hours + ':' + minutes + ':' + seconds+ ' ' +ampm;
+        var strDate = date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate() + " "+strTime;
+        updateObject.Dtime = strDate;
+
+    // flag is used whether ID is present or not flag = 1 implies present
+    // flagDatais used whether given data is valid or not
+    
+    var flag = 0,FlagData = 0;
+    // checking whether given url and caption are empty or not
+    if(updateObject.caption == null || updateObject.caption == "" )
+    {
+        delete updateObject.caption;
     }
-    catch(err){
-        console.log(err);
-    }
-    if(flag == 0)
-    res.sendStatus(404);
-    else{
+    else if(updateObject.url == null || updateObject.url == "" )
+        delete updateObject.url;  
+    
+
+    if(!FlagData){
         try{
-            const posts = await PostModel.updateOne({id  : id}, {$set: updateObject});
-            res.sendStatus(200);
+            const posts = await PostModel.find();
+            posts.forEach(da =>{
+                if(da.id == id)
+                {
+                    flag = 1;
+                }
+            });
         }
         catch(err){
-            console.log('rer',err);
-            res.sendStatus(404);
+            console.log(err);
+        }
+        
+        if(flag == 0)
+        res.sendStatus(404);
+        else{
+
+            // flag is used whether same data is present or not flag == 1 memes present
+    
+            var flag = 0;
+            try{
+                const posts = await PostModel.find();
+                posts.forEach(da =>{
+                    if(da.id != id && da.name == req.body.name && da.url == updateObject.url && da.caption == updateObject.caption)
+                    {
+                        flag = 1;
+                    }
+                });
+            }
+            catch(err){
+                console.log(err);
+            }
+            if(flag == 0){
+                try{
+                    const posts = await PostModel.updateOne({id  : id}, {$set: updateObject});
+                    // for success
+                    res.sendStatus(200);
+                }
+                catch(err){
+                    console.log('rer',err);
+                    // for failure
+                    res.sendStatus(404);
+                }
+            }
+            else{
+                // for conflict
+                res.sendStatus(409);
+            }
         }
     }
+    else
+    res.sendStatus(409);
 });
 
 
