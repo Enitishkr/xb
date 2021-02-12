@@ -196,41 +196,72 @@ app.post('/memes',async (req,res) => {
 });
 
 
+// Retriving the data based on ID parameter
+app.get('/memes/:id',async (req,res)=>{
+    
+    // flag is used whether ID is present or not flag = 1 implies present
+    var arrObj = [],flag=0;
+    
+    try{
+        const posts = await PostModel.find();
+        posts.forEach(da =>{
+            if(da.id == req.params.id)
+            {
+                var obj = {};
+                obj.id = da.id;
+                obj.name = da.name;
+                obj.url = da.url;
+                obj.caption = da.caption;
+                //obj.Dtime = da.Dtime;
+                arrObj.push(obj);
+                flag = 1;
+            }
+        });
+        
+    }
+    catch(err){
+        console.log(err);
+    }
+    if(flag == 0)
+    res.sendStatus(404);
+    else
+    res.json(arrObj);
+    
+});
 
-// Retriving the data based on ID param
-app.get('/memes/:id',(req,res)=>{
+app.get('/memes/time/:id',async (req,res)=>{
     
-   // flag is used whether ID is present or not flag = 1 implies present
-   var arrObj = [],flag=0;
+    // flag is used whether ID is present or not flag = 1 implies present
+    var arrObj = [],flag=0;
     
-   try{
-       const posts = await PostModel.find();
-       posts.forEach(da =>{
-           if(da.id == req.params.id)
-           {
-               var obj = {};
-               obj.id = da.id;
-               obj.name = da.name;
-               obj.url = da.url;
-               obj.caption = da.caption;
-               //obj.Dtime = da.Dtime;
-               arrObj.push(obj);
-               flag = 1;
-           }
-       });
-       
-   }
-   catch(err){
-       console.log(err);
-   }
-   if(flag == 0)
-   res.sendStatus(404);
-   else
-   res.json(arrObj);
+    try{
+        const posts = await PostModel.find();
+        posts.forEach(da =>{
+            if(da.id == req.params.id)
+            {
+                var obj = {};
+                obj.id = da.id;
+                obj.name = da.name;
+                obj.url = da.url;
+                obj.caption = da.caption;
+                obj.Dtime = da.Dtime;
+                arrObj.push(obj);
+                flag = 1;
+            }
+        });
+        
+    }
+    catch(err){
+        console.log(err);
+    }
+    if(flag == 0)
+    res.sendStatus(404);
+    else
+    res.json(arrObj);
+    
 })
-
 // Retriving the Data Based on Name Param
-app.get('/memes/name/:name',(req,res)=>{
+app.get('/memes/name/:name',async (req,res)=>{
     
      // flag is used whether ID is present or not flag = 1 implies present
      var arrObj = [],flag=0;
